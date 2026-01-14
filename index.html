@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北海道冰雪之旅</title>
     
-    <link rel="apple-touch-icon" href="header-bg.png">
-    <link rel="icon" href="header-bg.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="shortcut icon" type="image/png" href="icon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -15,11 +16,10 @@
 
     <style>
         body {
-            font-family: 'Zen Maru Gothic', sans-serif; /* 日系圓體 */
-            background-color: #EBF4FA; /* 延伸圖片底色 */
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #EBF4FA;
             -webkit-tap-highlight-color: transparent;
         }
-        /* 隱藏滾動條但保留功能 */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -27,7 +27,6 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* 卡片過渡動畫 */
         .fade-enter-active, .fade-leave-active {
             transition: opacity 0.3s ease;
         }
@@ -55,7 +54,7 @@
 <div id="app" class="max-w-md mx-auto min-h-screen bg-[#E6E8F5] relative shadow-2xl overflow-hidden">
 
     <header class="relative w-full h-[250px] overflow-hidden">
-        <img src="./header-bg.png" alt="Hokkaido Banner" class="w-full h-full object-cover object-center">
+        <img src="./header-bg.png" onerror="this.src='./icon.png'" alt="Hokkaido Banner" class="w-full h-full object-cover object-center">
         
         <div class="absolute bottom-10 right-4 flex gap-2 z-20">
             <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
@@ -64,4 +63,19 @@
             <button @click="currentTab = 'info'" :class="currentTab === 'info' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
                 <i class="fa-solid fa-circle-info text-lg"></i>
             </button>
-            <button @click="
+            <button @click="currentTab = 'shopping'" :class="currentTab === 'shopping' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
+                <i class="fa-solid fa-basket-shopping text-lg"></i>
+            </button>
+            <button @click="currentTab = 'expenses'" :class="currentTab === 'expenses' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
+                <i class="fa-solid fa-yen-sign text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative -mt-6 rounded-t-[30px] bg-[#E6E8F5] min-h-[calc(100vh-250px)] pb-24 z-10 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        
+        <div v-if="currentTab === 'itinerary'" class="animate-fade-in">
+            <div class="pt-6 pb-2 px-4 flex space-x-4 overflow-x-auto no-scrollbar">
+                <div v-for="(day, index) in itineraryData" :key="index" 
+                     @click="currentDayIndex = index"
+                     :class

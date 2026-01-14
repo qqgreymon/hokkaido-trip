@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>北海道冰雪之旅</title>
+    
+    <link rel="apple-touch-icon" href="header-bg.png">
+    <link rel="icon" href="header-bg.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,18 +15,25 @@
 
     <style>
         body {
-            font-family: 'Zen Maru Gothic', sans-serif;
-            background-color: #E6E8F5;
+            font-family: 'Zen Maru Gothic', sans-serif; /* 日系圓體 */
+            background-color: #EBF4FA; /* 延伸圖片底色 */
             -webkit-tap-highlight-color: transparent;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* 動畫特效 */
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
-        .fade-enter-from, .fade-leave-to { opacity: 0; }
-        .modal-enter-active, .modal-leave-active { transition: all 0.3s ease; }
-        .modal-enter-from, .modal-leave-to { opacity: 0; transform: scale(0.9); }
+        /* 隱藏滾動條但保留功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* 卡片過渡動畫 */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -32,6 +43,7 @@
                         'hokkaido-blue': '#89CFF0',
                         'ice-white': '#F0F8FF',
                         'dark-text': '#475569',
+                        'soft-pink': '#F4C2C2' 
                     }
                 }
             }
@@ -40,277 +52,16 @@
 </head>
 <body class="text-dark-text bg-[#E6E8F5]">
 
-<div id="app" class="max-w-md mx-auto min-h-screen bg-[#E6E8F5] relative shadow-2xl overflow-hidden flex flex-col">
+<div id="app" class="max-w-md mx-auto min-h-screen bg-[#E6E8F5] relative shadow-2xl overflow-hidden">
 
-    <header class="relative w-full h-[220px] shrink-0">
-        <div class="w-full h-full bg-blue-200 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1548182272-136594d22f6a?q=80&w=800&auto=format&fit=crop" 
-                 alt="Hokkaido" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#E6E8F5] to-transparent"></div>
-        </div>
+    <header class="relative w-full h-[250px] overflow-hidden">
+        <img src="./header-bg.png" alt="Hokkaido Banner" class="w-full h-full object-cover object-center">
         
-        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-4 z-20 px-4">
-            <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'bg-hokkaido-blue text-white scale-110' : 'bg-white/80 text-gray-400'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-md w-12 h-12 flex items-center justify-center">
-                <i class="fa-solid fa-map-location-dot"></i>
+        <div class="absolute bottom-10 right-4 flex gap-2 z-20">
+            <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
+                <i class="fa-solid fa-map-location-dot text-lg"></i>
             </button>
-            <button @click="currentTab = 'shopping'" :class="currentTab === 'shopping' ? 'bg-hokkaido-blue text-white scale-110' : 'bg-white/80 text-gray-400'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-md w-12 h-12 flex items-center justify-center">
-                <i class="fa-solid fa-basket-shopping"></i>
+            <button @click="currentTab = 'info'" :class="currentTab === 'info' ? 'bg-hokkaido-blue text-white' : 'bg-white/80 text-gray-500'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-sm">
+                <i class="fa-solid fa-circle-info text-lg"></i>
             </button>
-            <button @click="currentTab = 'expenses'" :class="currentTab === 'expenses' ? 'bg-hokkaido-blue text-white scale-110' : 'bg-white/80 text-gray-400'" class="p-3 rounded-full shadow-lg transition-all duration-300 backdrop-blur-md w-12 h-12 flex items-center justify-center">
-                <i class="fa-solid fa-yen-sign"></i>
-            </button>
-        </div>
-    </header>
-
-    <main class="flex-1 relative z-10 px-4 pb-24 overflow-y-auto no-scrollbar">
-        
-        <div v-if="currentTab === 'itinerary'" class="animate-fade-in space-y-4">
-            <div class="flex space-x-3 overflow-x-auto no-scrollbar py-2">
-                <div v-for="(day, index) in itineraryData" :key="index" 
-                     @click="currentDayIndex = index"
-                     :class="currentDayIndex === index ? 'bg-white text-hokkaido-blue ring-2 ring-blue-100' : 'bg-white/40 text-gray-400'"
-                     class="flex-shrink-0 flex flex-col items-center justify-center w-14 h-18 py-2 rounded-2xl transition-all cursor-pointer shadow-sm">
-                    <span class="text-xs font-bold">{{ day.week }}</span>
-                    <span class="text-xl font-bold">{{ day.date }}</span>
-                </div>
-            </div>
-
-            <div class="space-y-4 pb-4">
-                <div v-for="(item, index) in currentDayItinerary" :key="item.id" class="relative group">
-                    <div v-if="index > 0" class="flex items-center pl-6 py-1 text-xs text-gray-400 gap-2">
-                        <div class="h-4 w-0.5 bg-gray-300 absolute -top-3 left-[26px]"></div>
-                        <i class="fa-solid fa-person-walking"></i>
-                        <span>15 min</span>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-4 shadow-sm relative z-10 flex gap-3">
-                        <div class="flex flex-col items-center gap-1 min-w-[50px]">
-                            <span class="text-xs font-bold text-gray-400">{{ item.time }}</span>
-                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-hokkaido-blue">
-                                <i :class="item.icon"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-gray-700">{{ item.name }}</h3>
-                            <p class="text-xs text-gray-400 mt-1">{{ item.note }}</p>
-                            <div v-if="item.tags" class="flex gap-1 mt-2">
-                                <span v-for="tag in item.tags" class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{{ tag }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div v-if="currentTab === 'shopping'" class="animate-fade-in space-y-4 pt-2">
-            <div class="flex justify-between items-end mb-2">
-                <h2 class="text-xl font-bold text-gray-700">必買清單</h2>
-                <span class="text-xs text-gray-400">預算: ¥{{ totalShoppingBudget }}</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div v-for="(item, index) in shoppingList" :key="index" class="bg-white rounded-xl p-3 shadow-sm relative flex flex-col gap-2">
-                    <div class="w-full aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
-                        <img v-if="item.image" :src="item.image" class="w-full h-full object-cover">
-                        <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                            <i class="fa-solid fa-image text-2xl"></i>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <div class="font-bold text-gray-700 text-sm truncate">{{ item.name }}</div>
-                        <div class="flex justify-between items-center mt-1">
-                            <span class="text-xs text-hokkaido-blue font-bold">¥{{ item.price }}</span>
-                            <button @click="toggleBought(index)" :class="item.bought ? 'text-green-500' : 'text-gray-300'" class="transition-colors">
-                                <i class="fa-solid fa-circle-check text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <button @click="deleteShoppingItem(index)" class="absolute top-2 right-2 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center text-red-400 shadow-sm z-10">
-                        <i class="fa-solid fa-xmark text-xs"></i>
-                    </button>
-                </div>
-
-                <div @click="openShoppingModal" class="bg-white/50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center gap-2 aspect-[3/4] cursor-pointer hover:bg-white/80 transition-colors">
-                    <i class="fa-solid fa-plus text-2xl text-gray-400"></i>
-                    <span class="text-xs text-gray-400">新增商品</span>
-                </div>
-            </div>
-        </div>
-
-        <div v-if="currentTab === 'expenses'" class="animate-fade-in pt-4">
-            <div class="bg-white rounded-2xl p-5 shadow-sm mb-4">
-                <h3 class="font-bold text-gray-700 mb-4"><i class="fa-solid fa-calculator text-hokkaido-blue mr-2"></i>匯率換算</h3>
-                <div class="flex items-center gap-3">
-                    <div class="flex-1 bg-gray-50 p-2 rounded-lg relative">
-                        <span class="absolute left-3 top-2.5 text-gray-400 text-xs">JPY</span>
-                        <input type="number" v-model="calcJpy" class="w-full pl-8 bg-transparent outline-none font-bold text-gray-700" placeholder="0">
-                    </div>
-                    <i class="fa-solid fa-arrow-right-long text-gray-400"></i>
-                    <div class="flex-1 bg-gray-50 p-2 rounded-lg relative">
-                        <span class="absolute left-3 top-2.5 text-gray-400 text-xs">TWD</span>
-                        <div class="w-full pl-8 font-bold text-hokkaido-blue">{{ (calcJpy * 0.22).toFixed(0) }}</div>
-                    </div>
-                </div>
-                <p class="text-[10px] text-gray-400 mt-2 text-right">匯率參考: 0.22</p>
-            </div>
-        </div>
-
-    </main>
-
-    <transition name="modal">
-        <div v-if="showShoppingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="showShoppingModal = false"></div>
-            <div class="bg-white w-full max-w-sm rounded-3xl p-6 relative shadow-2xl z-10">
-                <h3 class="text-xl font-bold text-gray-700 mb-4 text-center">新增必買商品</h3>
-                
-                <div class="space-y-4">
-                    <div class="flex justify-center">
-                        <div class="relative w-32 h-32 bg-gray-100 rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 group">
-                            <img v-if="newShoppingItem.image" :src="newShoppingItem.image" class="w-full h-full object-cover">
-                            
-                            <div v-else class="absolute inset-0 flex flex-col items-center justify-center text-gray-400" @click="$refs.fileInput.click()">
-                                <i class="fa-solid fa-camera text-2xl mb-1"></i>
-                                <span class="text-xs">點擊拍照</span>
-                            </div>
-
-                            <button v-if="newShoppingItem.image" @click="newShoppingItem.image = null" class="absolute top-1 right-1 bg-black/50 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                <i class="fa-solid fa-xmark text-xs"></i>
-                            </button>
-
-                            <input type="file" ref="fileInput" accept="image/*" class="hidden" @change="handleImageUpload">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-xs text-gray-500 font-bold ml-1">商品名稱</label>
-                        <input v-model="newShoppingItem.name" type="text" class="w-full bg-gray-50 rounded-xl p-3 mt-1 outline-none focus:ring-2 ring-blue-200" placeholder="例如: 白色戀人">
-                    </div>
-                    
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <label class="text-xs text-gray-500 font-bold ml-1">預估價格 (日幣)</label>
-                            <input v-model="newShoppingItem.price" type="number" class="w-full bg-gray-50 rounded-xl p-3 mt-1 outline-none focus:ring-2 ring-blue-200" placeholder="1200">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex gap-3 mt-6">
-                    <button @click="showShoppingModal = false" class="flex-1 py-3 rounded-xl bg-gray-100 text-gray-500 font-bold">取消</button>
-                    <button @click="addShoppingItem" class="flex-1 py-3 rounded-xl bg-hokkaido-blue text-white font-bold shadow-lg shadow-blue-200">加入清單</button>
-                </div>
-            </div>
-        </div>
-    </transition>
-
-</div>
-
-<script>
-    const { createApp, ref, computed } = Vue;
-
-    createApp({
-        setup() {
-            const currentTab = ref('itinerary');
-            const currentDayIndex = ref(0);
-            const showShoppingModal = ref(false);
-            const calcJpy = ref(null);
-            
-            // 處理檔案上傳的 Ref
-            const fileInput = ref(null);
-
-            // 假資料: 行程
-            const itineraryData = ref([
-                { date: '12/15', week: 'Day 1' },
-                { date: '12/16', week: 'Day 2' },
-                { date: '12/17', week: 'Day 3' },
-            ]);
-
-            const currentDayItinerary = ref([
-                { id: 1, time: '10:00', name: '桃園機場出發', icon: 'fa-plane', note: 'JX850 登機', tags: ['機票'] },
-                { id: 2, time: '14:20', name: '抵達新千歲', icon: 'fa-plane-arrival', note: '入境審查約 1hr', tags: [] },
-                { id: 3, time: '16:00', name: '搭乘 JR 去札幌', icon: 'fa-train', note: '快速 Airport 號', tags: ['IC卡'] },
-                { id: 4, time: '18:00', name: '狸小路晚餐', icon: 'fa-utensils', note: '湯咖哩 GARAKU', tags: ['排隊'] },
-            ]);
-
-            // 購物清單 State
-            const shoppingList = ref([
-                { name: '六花亭 蘭姆葡萄', price: 1300, bought: false, image: null },
-                { name: 'LeTAO 起司蛋糕', price: 2100, bought: false, image: null }
-            ]);
-
-            const newShoppingItem = ref({
-                name: '',
-                price: '',
-                image: null
-            });
-
-            // 計算總預算
-            const totalShoppingBudget = computed(() => {
-                return shoppingList.value.reduce((sum, item) => sum + Number(item.price || 0), 0);
-            });
-
-            // 方法: 打開新增視窗
-            const openShoppingModal = () => {
-                newShoppingItem.value = { name: '', price: '', image: null };
-                showShoppingModal.value = true;
-            };
-
-            // 方法: 處理圖片上傳 (關鍵邏輯)
-            const handleImageUpload = (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                // 使用 FileReader 讀取圖片並轉為 Base64
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    newShoppingItem.value.image = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            };
-
-            // 方法: 加入清單
-            const addShoppingItem = () => {
-                if (!newShoppingItem.value.name) {
-                    alert('請輸入商品名稱');
-                    return;
-                }
-                shoppingList.value.push({ ...newShoppingItem.value, bought: false });
-                showShoppingModal.value = false;
-            };
-
-            // 方法: 刪除商品
-            const deleteShoppingItem = (index) => {
-                if(confirm('確定要刪除嗎？')) {
-                    shoppingList.value.splice(index, 1);
-                }
-            };
-
-            // 方法: 切換購買狀態
-            const toggleBought = (index) => {
-                shoppingList.value[index].bought = !shoppingList.value[index].bought;
-            };
-
-            return {
-                currentTab,
-                currentDayIndex,
-                itineraryData,
-                currentDayItinerary,
-                showShoppingModal,
-                shoppingList,
-                newShoppingItem,
-                totalShoppingBudget,
-                fileInput,
-                calcJpy,
-                openShoppingModal,
-                handleImageUpload,
-                addShoppingItem,
-                deleteShoppingItem,
-                toggleBought
-            }
-        }
-    }).mount('#app');
-</script>
-
-</body>
-</html>
+            <button @click="

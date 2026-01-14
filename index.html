@@ -554,8 +554,8 @@
             const handleImageUpload = (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    // 檢查檔案大小 (限制在 2MB 以內比較保險)
-                    if (file.size > 2 * 1024 * 1024) {
+                    // 檢查檔案大小 (限制在 15MB 以內比較保險)
+                    if (file.size > 15 * 1024 * 1024) {
                         alert("圖片太大了，請選一張小一點的喔！");
                         return;
                     }
@@ -618,4 +618,5 @@
     }).mount('#app');
 </script>
 </body>
+
 </html>
